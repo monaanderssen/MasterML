@@ -68,11 +68,12 @@ elif args.monoZ:
 
 
 
-def plotSignificanceWithZoom(mass_1, mass_2, sign, process_name, xLabel, yLabel, sig_type):
+def plotSignificanceWithZoom(mass_1, mass_2, sign, process_name, xLabel, yLabel):
+    """ Plot significance for direct slepton and mono-Z """
     fig, ax = plt.subplots()
 
     cm = plt.cm.get_cmap('brg')
-    sc = ax.scatter(mass_1, mass_2, c=sign, s=100,marker = 's', cmap=cm)
+    sc = ax.scatter(mass_1, mass_2, c=sign, s=100,marker = 's', cmap=cm, vmin = 0, vmax = 3.5)
 
     plt.xlabel(xLabel + '[GeV]')
     plt.ylabel(yLabel + '[GeV]')
@@ -80,19 +81,17 @@ def plotSignificanceWithZoom(mass_1, mass_2, sign, process_name, xLabel, yLabel,
     cb = plt.colorbar(sc)
     cb.set_label('Significance')
     if args.slepslep:
-    	axins = inset_axes(ax, height = 1.5, width = '53%', loc=2) # zoom = 6
+    	axins = inset_axes(ax, height = 1.5, width = '53%', loc=2) 
     	x1, x2, y1, y2 = 75, 210, -10, 170
     elif args.monoZ:
-    	axins = inset_axes(ax, height = 1.5, width = '40%', loc=2) # zoom = 6
+    	axins = inset_axes(ax, height = 1.5, width = '40%', loc=2) 
     	x1, x2, y1, y2 = -10, 170, -10, 60
 
     axins.set_xlim(x1, x2)
     axins.set_ylim(y1, y2)
-    axins.scatter(mass_1, mass_2, c=sign, s=100,marker = 's', cmap=cm)
+    axins.scatter(mass_1, mass_2, c=sign, s=100,marker = 's', cmap=cm, vmin = 0, vmax = 3.5)
     plt.xticks(visible=False)
     plt.yticks(visible=False)
-    
-    #n = [ '%.2f' % elem for elem in Z_N_exp_list]
     
     for i, txt in enumerate(sign):
         ax.annotate(txt, (mass_1[i], mass_2[i]),color = 'white', 
@@ -104,23 +103,16 @@ def plotSignificanceWithZoom(mass_1, mass_2, sign, process_name, xLabel, yLabel,
                     horizontalalignment='center',
                     verticalalignment='center')
     
-    #axins.imshow(Z2, extent=extent, interpolation="nearest",
-             #origin="lower")
-
-    # sub region of the original image
-
-
-    # draw a bbox of the region of the inset axes in the parent axes and
-    # connecting lines between the bbox and the inset axes area
     mark_inset(ax, axins, loc1=3, loc2=3, fc="none", ec="0.5")
 
     plt.draw()
     plt.tight_layout()
-    plt.savefig('significanceplots/significanceCutandCount_' + process_name + '_' + sig_type + '.pdf')
+    plt.savefig('significanceplots/significanceCutandCount_' + process_name + '.pdf')
     
     plt.show()
 
-def plotSignificance(mass_1, mass_2, sign, process_name, xLabel, yLabel, sig_type):
+def plotSignificance(mass_1, mass_2, sign, process_name, xLabel, yLabel):
+    """ Plot signficance for chargino production """
     fig, ax = plt.subplots()
 
     cm = plt.cm.get_cmap('plasma')
@@ -131,27 +123,15 @@ def plotSignificance(mass_1, mass_2, sign, process_name, xLabel, yLabel, sig_typ
 
     cb = plt.colorbar(sc)
     cb.set_label('Significance')
-
-    
-    #n = [ '%.2f' % elem for elem in Z_N_exp_list]
     
     for i, txt in enumerate(sign):
         ax.annotate(txt, (mass_1[i], mass_2[i]),color = 'white', 
                     fontsize=4, weight='heavy',
                     horizontalalignment='center',
                     verticalalignment='center')
-    
-    #axins.imshow(Z2, extent=extent, interpolation="nearest",
-             #origin="lower")
-
-    # sub region of the original image
-
-
-    # draw a bbox of the region of the inset axes in the parent axes and
-    # connecting lines between the bbox and the inset axes area
 
     plt.tight_layout()
-    plt.savefig('significanceplots/significanceCutandCount_' + process_name + '_' + sig_type + '.pdf')
+    plt.savefig('significanceplots/significanceCutandCount_' + process_name + '.pdf')
     
     plt.show()
 
@@ -189,70 +169,10 @@ elif args.monoZ:
 #print(mass_1, mass_2, sign)
 
 if args.slepsnu or args.WW:
-	sig_type = 'all'
-	plotSignificance(mass_1, mass_2, sign, process_name, xLabel, yLabel, sig_type)
+	plotSignificance(mass_1, mass_2, sign, process_name, xLabel, yLabel)
 
 elif args.slepslep or args.monoZ:
-	sig_type = 'all'
-	plotSignificanceWithZoom(mass_1, mass_2, sign, process_name, xLabel, yLabel, sig_type)
-"""
-elif args.slepslep or args.monoZ:
-	mass_x_low = []
-	mass_y_low = []
-	mass_x_high = []
-	mass_y_high = []
-	Z_N_low = []
-	Z_N_high = []
-	for i, j, k in zip(mass_1, mass_2, sign):
-		#print(i)
-		if i < 300:
-			mass_x_low.append(i)
-			mass_y_low.append(j)
-			Z_N_low.append(k)
-		elif i>= 300:
-			mass_x_high.append(i)
-			mass_y_high.append(j)
-			Z_N_high.append(k)
-
-	sig_type = 'low'
-	mass_1 = np.array(mass_x_low)
-	mass_2 = np.array(mass_y_low)
-	sign = np.array(Z_N_low)
-	plotSignificance(mass_1, mass_2, sign, process_name, xLabel, yLabel, sig_type)
-
-
-	sig_type = 'high'
-	mass_1 = np.array(mass_x_high)
-	mass_2 = np.array(mass_y_high)
-	sign = np.array(Z_N_high)
-	plotSignificance(mass_1, mass_2, sign, process_name, xLabel, yLabel, sig_type)
-
-"""
-
-
-
-
-
-"""
-fig, ax = plt.subplots()
-cm = plt.cm.get_cmap('plasma')
-sc = ax.scatter(mass_1, mass_2, c=sign, s=100,marker = 's', cmap=cm)
-plt.xlabel(xLabel + '[GeV]')
-plt.ylabel(yLabel + '[GeV]')
-cb = plt.colorbar(sc)
-cb.set_label('Significance')
-    
-#n = [ '%.2f' % elem for elem in sign]
-    
-for i, txt in enumerate(sign):
-    ax.annotate(txt, (mass_1[i], mass_2[i]),color = 'white', 
-                fontsize=4, weight='heavy',
-                horizontalalignment='center',
-                verticalalignment='center')
-    
-#plt.savefig('significanceplots/significance_' + method_type + '_' + process_name + '_' + level_type + '_' + sig_type  + '.pdf')
-plt.show()
-"""
+	plotSignificanceWithZoom(mass_1, mass_2, sign, process_name, xLabel, yLabel)
 
 
 
